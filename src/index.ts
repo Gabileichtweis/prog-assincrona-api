@@ -1,6 +1,12 @@
 import axios from 'axios';
 import express, { Request, Response } from 'express';
-import { Calculadora } from './models/calculadora';
+
+const api = express();
+api.use(express.json());
+
+api.listen(3333, () => {
+  console.log('API ta rodandoooo');
+});
 
 function atividade1() {
   async function getUserFromGithub(user: string) {
@@ -30,102 +36,78 @@ function atividade1() {
 }
 
 function atividade2() {
-  const api = express();
-  api.use(express.json());
+  api.get('/calculadora', (req: Request, res: Response) => {
+    try {
+      let operacao = req.query.operacao;
+      let valorA = Number(req.query.valorA);
+      let valorB = Number(req.query.valorB);
 
-  api.listen(5000, () => {
-    console.log('API ta rodandoooo');
+      if (operacao == 'somar') {
+        let resultado = valorA + valorB;
+        return res.status(200).send({
+          ok: true,
+          message: `${valorA} + ${valorB} = ${resultado}`,
+        });
+      }
+
+      if (operacao == 'subtrair') {
+        let resultado = valorA - valorB;
+        return res.status(200).send({
+          ok: true,
+          message: `${valorA} - ${valorB} = ${resultado}`,
+        });
+      }
+
+      if (operacao == 'multiplicar') {
+        let resultado = valorA * valorB;
+        return res.status(200).send({
+          ok: true,
+          message: `${valorA} * ${valorB} = ${resultado}`,
+        });
+      }
+
+      if (operacao == 'dividir') {
+        let resultado = valorA / valorB;
+        return res.status(200).send({
+          ok: true,
+          message: `${valorA} / ${valorB} = ${resultado}`,
+        });
+      }
+    } catch (error: any) {
+      return res.status(500).send({
+        ok: false,
+        message: error.toString(),
+      });
+    }
   });
-
-  api.get(
-    '/calculadora?operacao=somar&valorA=7&valorB=13',
-    (req: Request, res: Response) => {
-      try {
-        const { operacao, valorA, valorB } = req.params;
-
-        if (operacao == 'somar') {
-          let resultado = valorA + valorB;
-          return res.status(200).send({
-            ok: true,
-            message: 'teste',
-          });
-        }
-      } catch (error: any) {
-        return res.status(500).send({
-          ok: false,
-          message: error.toString(),
-        });
-      }
-    }
-  );
-
-  api.get(
-    '/calculadora?operacao=subtrair&valorA=30&valorB=13',
-    (req: Request, res: Response) => {
-      try {
-        const { operacao, valorA, valorB } = req.params;
-
-        if (operacao == 'subtrair') {
-          let resultado = valorA - valorB;
-          return res.status(200).send({
-            ok: true,
-            message: 'teste 2',
-          });
-        }
-      } catch (error: any) {
-        return res.status(500).send({
-          ok: false,
-          message: error.toString(),
-        });
-      }
-    }
-  );
-
-  api.get(
-    '/calculadora?operacao=multiplicar&valorA=8&valorB=8',
-    (req: Request, res: Response) => {
-      try {
-        const { operacao, valorA, valorB } = req.params;
-
-        if (operacao == 'multiplicar') {
-          let resultado = valorA * valorB;
-          return res.status(200).send({
-            ok: true,
-            message: 'teste 2',
-          });
-        }
-      } catch (error: any) {
-        return res.status(500).send({
-          ok: false,
-          message: error.toString(),
-        });
-      }
-    }
-  );
-
-  api.get(
-    '/calculadora?operacao=dividir&valorA=120&valorB=10',
-    (req: Request, res: Response) => {
-      try {
-        const { operacao, valorA, valorB } = req.params;
-
-        if (operacao == 'multiplicar') {
-          let resultado = valorA / valorB;
-          return res.status(200).send({
-            ok: true,
-            message: 'teste 3',
-          });
-        }
-      } catch (error: any) {
-        return res.status(500).send({
-          ok: false,
-          message: error.toString(),
-        });
-      }
-    }
-  );
 }
 atividade2();
 
-function atividade3() {}
+function atividade3() {
+  let contador = 0;
+  api.get('/contador', (req: Request, res: Response) => {
+    try {
+      contador++;
+      console.log(contador);
+
+      if (contador < 10) {
+        return res.status(200).send({
+          ok: true,
+          message: `Contador: ${contador}`,
+        });
+      } else {
+        contador = 0;
+        return res.status(200).send({
+          ok: true,
+          message: `Contador chegou a 10`,
+        });
+      }
+    } catch (error: any) {
+      return res.status(500).send({
+        ok: false,
+        message: error.toString(),
+      });
+    }
+  });
+}
 atividade3();
