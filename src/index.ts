@@ -81,7 +81,6 @@ function atividade2() {
     }
   });
 }
-atividade2();
 
 function atividade3() {
   let contador = 0;
@@ -110,4 +109,24 @@ function atividade3() {
     }
   });
 }
-atividade3();
+
+function atividade4() {
+  api.get('/numeral', (req: Request, res: Response) => {
+    let numero = Number(req.query.numero);
+    let operacao = req.query.operacao;
+    let resultado = 0;
+
+    if (operacao === 'anterior') {
+      resultado = numero - 1;
+    }
+
+    if (operacao === 'proximo') {
+      resultado = numero + 1;
+    }
+
+    return res.status(200).send({
+      ok: true,
+      messege: `Operação: ${operacao}, Número: ${numero}, Resultado: ${resultado}`,
+    });
+  });
+}
